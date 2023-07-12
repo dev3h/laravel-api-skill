@@ -4,39 +4,43 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSkillRequest;
-use Illuminate\Http\Request;
+use App\Http\Resources\V1\SkillCollection;
+use App\Http\Resources\V1\SkillResource;
+use App\Models\Skill;
 
 class SkillController extends Controller
 {
     public function index()
     {
-        return response()->json([
-            'message' => 'Hello World!',
-        ]);
+        return new SkillCollection(Skill::paginate(1));
     }
 
     public function store(StoreSkillRequest $request)
     {
-        //
+        Skill::create($request->validated());
+        return response()->json([
+            'message' => 'Skill created successfully!',
+        ]);
     }
 
-    public function show($id)
+    public function show(Skill $skill)
     {
-        //
+        return new SkillResource($skill);
     }
 
-    public function edit($id)
+    public function update(StoreSkillRequest $request, Skill $skill)
     {
-        //
+        $skill->update($request->all());
+        return response()->json([
+            'message' => 'Skill updated successfully!',
+        ]);
     }
 
-    public function update(Request $request, $id)
+    public function destroy(Skill $skill)
     {
-        //
-    }
-
-    public function destroy($id)
-    {
-        //
+        $skill->delete();
+        return response()->json([
+            'message' => 'Skill deleted successfully!',
+        ]);
     }
 }
